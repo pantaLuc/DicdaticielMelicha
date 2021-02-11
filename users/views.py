@@ -19,6 +19,18 @@ def signup(request):
     return Response(serializer.data)
 
 
+@api_view(['POST'])
+def signin(request):
+    email = request.data.get('email')
+    password = request.data.get('password')
+    user = User.objects.filter(email=email).first()
+    if user is None:
+        raise exceptions.AuthenticationFailed('User not Found')
+    if not user.check_password(password):
+        raise exceptions.AuthenticationFailed('incorrect password')
+    return Response('Success')
+
+
 @api_view(['GET'])
 def users(request):
     serializer = UserSerializer(User.objects.all(), many=True)
