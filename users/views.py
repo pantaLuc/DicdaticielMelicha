@@ -2,12 +2,13 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import exceptions
-from .models import User
+from .models import User, Permission
 from .serializers import UserSerializer
 from .authentication import generate_token_access
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from .authentication import JWTauthentication
+from .serializers import PermissionSerializer
 # Create your views here.
 
 
@@ -74,3 +75,14 @@ def users(request):
     serializer = UserSerializer(User.objects.all(), many=True)
 
     return Response(serializer.data)
+
+
+class PermissionView(APIView):
+    authentication_classes = [JWTauthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = PermissionSerializer(Permission.objects.all(), many=True)
+        return Response({
+            'data': serializer.data
+        })
