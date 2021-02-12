@@ -4,6 +4,10 @@ from rest_framework.response import Response
 from rest_framework import exceptions
 from .models import User
 from .serializers import UserSerializer
+from .authentication import generate_token_access
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from .authentication import JWTauthentication
 # Create your views here.
 
 
@@ -18,6 +22,8 @@ def signup(request):
     serializer.save()
     return Response(serializer.data)
 
+# signin function
+
 
 @api_view(['POST'])
 def signin(request):
@@ -28,10 +34,43 @@ def signin(request):
         raise exceptions.AuthenticationFailed('User not Found')
     if not user.check_password(password):
         raise exceptions.AuthenticationFailed('incorrect password')
-    return Response('Success')
+
+    response = Response()
+    token = generate_token_access(user)
+    response.set_cookie(key='jwt', value=token, httponly=True)
+    response.data = {
+        'jwt': token
+    }
+    return response
+
+
+# current_user do it with class APIView
+
+class CurrentUser(APIView):
+    authentication_classes = [JWTauthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response({
+            'data': serializer.data
+        })
+
+# logout function
+
+
+@api_view(['POST'])
+def signout(request):
+    response = Response()
+    response.delete_cookie(key='jwt')
+    response.data = {
+        'message': 'succes'
+    }
+    return response
 
 
 @api_view(['GET'])
 def users(request):
     serializer = UserSerializer(User.objects.all(), many=True)
+
     return Response(serializer.data)
