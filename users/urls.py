@@ -1,10 +1,10 @@
 from django.urls import path
 
-from .views import signup, users, signin, CurrentUser, signout, PermissionView, RoleViewSet
+from .views import(signup, signin, CurrentUser, signout,
+                   PermissionView, RoleViewSet, UserGenericAPIVIEW)
 
 urlpatterns = [
     path('signup', signup),
-    path('users', users),
     path('signin', signin),
     path('currentuser', CurrentUser.as_view()),
     path('signout', signout),
@@ -17,6 +17,9 @@ urlpatterns = [
         'get': 'retrieve',
         'put': 'update',
         'delete': 'destroy'
-    }))
+    })),
+    path('users', UserGenericAPIVIEW.as_view()),
+    path('users/<str:pk>', UserGenericAPIVIEW.as_view())
+
 
 ]
