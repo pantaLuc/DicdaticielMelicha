@@ -1,0 +1,30 @@
+[
+    {
+        "model":"users.permission",
+        "pk":1,
+        "fields":{
+            "name":"view_courses"
+        }
+    },
+    {
+        "model":"users.permission",
+        "pk":2,
+        "fields":{
+            "name":"created_courses"
+        }
+    },
+    {
+        "model":"users.permission",
+        "pk":3,
+        "fields":{
+            "name":"update_courses"
+        }
+    },
+    {
+        "model":"users.permission",
+        "pk":4,
+        "fields":{
+            "name":"delete_courses"
+        }
+    }
+]

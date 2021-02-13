@@ -1,0 +1,23 @@
+[
+   {
+       "model":"users.role",
+       "pk":1,
+       "fields":{
+           "name":"Admin",
+           "permissions":[
+               1,2,3,4
+           ]
+       }
+   },
+
+   {
+    "model":"users.role",
+    "pk":1,
+    "fields":{
+        "name":"lecteur",
+        "permissions":[
+            1
+        ]
+    }
+}
+]

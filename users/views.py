@@ -1,14 +1,14 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import exceptions
-from .models import User, Permission
+from rest_framework import exceptions, viewsets, status
+from .models import User, Permission, Role
 from .serializers import UserSerializer
 from .authentication import generate_token_access
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from .authentication import JWTauthentication
-from .serializers import PermissionSerializer
+from .serializers import PermissionSerializer, RoleSerializer
 # Create your views here.
 
 
@@ -86,3 +86,43 @@ class PermissionView(APIView):
         return Response({
             'data': serializer.data
         })
+
+
+class RoleViewSet(viewsets.ViewSet):
+    authentication_classes = [JWTauthentication]
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request):
+        serializer = RoleSerializer(Role.objects.all(), many=True)
+        return Response({
+            'data': serializer.data
+        })
+
+    def retrieve(self, request, pk=None):
+        role = Role.objects.get(id=pk)
+        serializer = RoleSerializer(role)
+        return Response({
+            'data': serializer.data
+        })
+
+    def create(self, request):
+        serializer = RoleSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({
+            'data': serializer.data
+        }, status=status.HTTP_201_CREATED)
+
+    def update(self, request, pl=None):
+        role = Role.objects.get(id=pk)
+        serializer = RoleSerializer(instance=role, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({
+            'data': serializer.data}, status=status.HTTP_202_ACCEPTED)
+
+    def destroy(self, request, pk=None):
+        role = Role.objects.get(id=pk)
+        role.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)

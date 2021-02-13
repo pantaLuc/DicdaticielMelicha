@@ -8,10 +8,28 @@ class PermissionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class PermissionRelateField(serializers.StringRelatedField):
+    def to_representation(self, value):
+        return PermissionSerializer(value).data
+
+    def to_internal_value(self, data):
+        return data
+
+
 class RoleSerializer(serializers.ModelSerializer):
+    permissions = PermissionRelateField(many=True)
+
     class Meta:
         model = Role
         fields = '__all__'
+
+    def create(self, validated_data):
+        permissions = validated_data('permissions', None)
+        instance = self.Meta.model(**validated_data)  # associate array
+        instance.save()
+        instance.permissions.add(*permissions)  # normal array
+        instance.save()
+        return instance
 
 
 class UserSerializer(serializers.ModelSerializer):
