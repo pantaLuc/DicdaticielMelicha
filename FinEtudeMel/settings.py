@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -28,6 +29,24 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_HEADERS = (
+    'x-requested-with',
+    #'content-type',
+    'accept',
+    'origin',
+    'authorization',
+    'x-csrftoken',
+    'token',
+    'x-device-id',
+    'x-device-type',
+    'x-push-id',
+    'dataserviceversion',
+    'maxdataserviceversion'
+)
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,6 +57,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',
+    'formations',
     'rest_framework'
 ]
 
@@ -125,3 +145,16 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'users.User'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+
+# MEDIA_URL = '/upload/'
+# MEDIA_ROOT = os.path.join(BASE_DIR,'uploadfiles').replace('\\','/')
+
+REST_FRAMEWORK = {
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+    ]
+}
